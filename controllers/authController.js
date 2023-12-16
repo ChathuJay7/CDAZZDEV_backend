@@ -2,7 +2,7 @@ const authController = require('express').Router()
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const User = require('../models/User')
-const dotenv = require('dotenv').config()
+
 
 // register
 authController.post('/register', async(req,res) => {
@@ -32,18 +32,19 @@ authController.post('/register', async(req,res) => {
 // login
 authController.post('/login', async(req,res) => {
     try {
-
-        const { email, password } = req.body;
+        const { email } = req.body;
 
         const user = await User.findOne({email: email})
         if(!user){
             throw new Error("User credentials are wrong")
         }
 
-        const comparePassword = await bcrypt.compare(password, user.password)
+        const comparePassword = await bcrypt.compare(req.body.password, user.password)
         if(!comparePassword){
             throw new Error("User credentials are wrong")
         }
+
+        const { password, ...others} = user._doc
 
         const token = jwt.sign(
             {id: user.id, email: user.email},
@@ -51,7 +52,7 @@ authController.post('/login', async(req,res) => {
             {expiresIn: '5h'}
         )
 
-        return res.status(201).json({ token })
+        return res.status(201).json({others, token})
 
     } catch(error) {
         return res.status(500).json(error.message)

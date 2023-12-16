@@ -3,6 +3,7 @@ const cors = require('cors')
 const dotenv = require('dotenv').config()
 const mongoose = require('mongoose')
 const authController = require('./controllers/authController')
+const postController = require('./controllers/postController')
 
 const app = express()
 
@@ -28,6 +29,7 @@ app.use(express.urlencoded({extended: true}))
 
 // routes
 app.use('/auth', authController)
+app.use('/post', postController)
 
 // start server
 app.listen(process.env.PORT, () => console.log(`Server has been started in ${process.env.PORT} successfully`))
