@@ -7,8 +7,8 @@ const { verifyToken } = require('../middlewares/verifyToken')
 // get all
 postController.get('/', async(req, res) => {
     try {
-        const posts = await Post.find()
-        return res.status(200).json({posts})
+        const posts = await Post.find().populate('userId', 'username email').lean();
+        return res.status(200).json(posts)
     } catch(error) {
         console.log(error)
     }
