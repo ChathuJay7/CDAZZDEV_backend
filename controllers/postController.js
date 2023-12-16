@@ -1,6 +1,7 @@
 const postController = require('express').Router()
 const User = require('../models/User')
 const Post = require('../models/Post')
+const { verifyToken } = require('../middlewares/verifyToken')
 
 
 // get all
@@ -79,6 +80,26 @@ postController.put('/:postId', async (req, res) => {
     }
 });
 
+
+// delete post
+postController.delete('/:postId', async (req, res) => {
+  try {
+    const postId = req.params.postId;
+
+    // Find the post by postId and delete it
+    const deletedPost = await Post.findByIdAndDelete(postId);
+
+    if (!deletedPost) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    // Send a success message
+    res.status(200).json({ message: 'Post deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting post:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
 
 
 module.exports = postController
