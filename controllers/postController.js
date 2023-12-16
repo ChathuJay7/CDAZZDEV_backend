@@ -7,7 +7,7 @@ const Post = require('../models/Post')
 postController.get('/', async(req, res) => {
     try {
         const posts = await Post.find()
-        return res.status(200).json(posts)
+        return res.status(200).json({posts})
     } catch(error) {
         console.log(error)
     }
